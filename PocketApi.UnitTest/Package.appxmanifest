@@ -5,14 +5,14 @@
   xmlns:uap="http://schemas.microsoft.com/appx/manifest/uap/windows10"
   IgnorableNamespaces="uap mp">
 
-  <Identity Name="ceaa8a8b-c5e1-4a6f-ae6c-51a4f1ec8e52"
+  <Identity Name="101dab24-0a99-4eb4-92b7-8c178a06d10b"
             Publisher="CN=nickward"
             Version="1.0.0.0" />
 
-  <mp:PhoneIdentity PhoneProductId="ceaa8a8b-c5e1-4a6f-ae6c-51a4f1ec8e52" PhonePublisherId="00000000-0000-0000-0000-000000000000"/>
+  <mp:PhoneIdentity PhoneProductId="101dab24-0a99-4eb4-92b7-8c178a06d10b" PhonePublisherId="00000000-0000-0000-0000-000000000000"/>
 
   <Properties>
-    <DisplayName>WinPock.UnitTest</DisplayName>
+    <DisplayName>PocketApi.UnitTest</DisplayName>
     <PublisherDisplayName>nickward</PublisherDisplayName>
     <Logo>Assets\StoreLogo.png</Logo>
   </Properties>
@@ -27,12 +27,12 @@
   <Applications>
     <Application Id="vstest.executionengine.universal.App"
         Executable="$targetnametoken$.exe"
-        EntryPoint="WinPock.UnitTest.App">
+        EntryPoint="PocketApi.UnitTest.App">
       <uap:VisualElements
-        DisplayName="WinPock.UnitTest"
+        DisplayName="PocketApi.UnitTest"
         Square150x150Logo="Assets\Square150x150Logo.png"
         Square44x44Logo="Assets\Square44x44Logo.png"
-        Description="WinPock.UnitTest"
+        Description="PocketApi.UnitTest"
         BackgroundColor="transparent">
         <uap:DefaultTile Wide310x150Logo="Assets\Wide310x150Logo.png"/>
         <uap:SplashScreen Image="Assets\SplashScreen.png" />
@@ -40,7 +40,7 @@
     </Application>
   </Applications>
   <Capabilities>
+    <Capability Name="internetClientServer" />
     <Capability Name="privateNetworkClientServer" />
-    <Capability Name="internetClient"/>
   </Capabilities>
 </Package>

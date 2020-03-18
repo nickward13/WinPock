@@ -1,8 +1,8 @@
 ﻿using System.Text.Json.Serialization;
 
-namespace WinPock.Models
+namespace PocketApi
 {
-    class PocketApiRequestTokenRequestBody
+    class RequestTokenRequestBody
     {
         [JsonPropertyName("consumer_key")]
         public string ConsumerKey { get; set; }

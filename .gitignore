@@ -339,3 +339,5 @@ ASALocalRun/
 # BeatPulse healthcheck temp database
 healthchecksdb
 /WinPock.UWP/Secrets.cs
+/PocketApi/Secrets.cs
+/PocketApi.UnitTest/Secrets.cs
