@@ -125,6 +125,7 @@
     <Compile Include="Models\ApiPost.cs" />
     <Compile Include="Models\PocketApiRequestTokenRequestBody.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="Secrets.cs" />
   </ItemGroup>
   <ItemGroup>
     <AppxManifest Include="Package.appxmanifest">
