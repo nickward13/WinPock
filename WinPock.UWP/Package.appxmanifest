@@ -7,11 +7,11 @@
   IgnorableNamespaces="uap mp">
 
   <Identity
-    Name="b8c49248-722c-4e8c-b19c-fb467f8fb025"
+    Name="ed941fba-abff-4255-bafe-43fc1359cc61"
     Publisher="CN=nickward"
     Version="1.0.0.0" />
 
-  <mp:PhoneIdentity PhoneProductId="b8c49248-722c-4e8c-b19c-fb467f8fb025" PhonePublisherId="00000000-0000-0000-0000-000000000000"/>
+  <mp:PhoneIdentity PhoneProductId="ed941fba-abff-4255-bafe-43fc1359cc61" PhonePublisherId="00000000-0000-0000-0000-000000000000"/>
 
   <Properties>
     <DisplayName>WinPock.UWP</DisplayName>
