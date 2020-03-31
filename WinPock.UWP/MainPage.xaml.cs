@@ -1,10 +1,12 @@
-﻿using System;
+﻿using PocketApi.Auth;
+using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Runtime.InteropServices.WindowsRuntime;
 using Windows.Foundation;
 using Windows.Foundation.Collections;
+using Windows.Security.Authentication.Web;
 using Windows.UI.Xaml;
 using Windows.UI.Xaml.Controls;
 using Windows.UI.Xaml.Controls.Primitives;
@@ -25,6 +27,24 @@ namespace WinPock.UWP
         public MainPage()
         {
             this.InitializeComponent();
+            this.AuthPocket();
+        }
+
+        private async void AuthPocket()
+        {
+            Uri callbackUri = WebAuthenticationBroker.GetCurrentApplicationCallbackUri();
+            RequestToken requestToken = await ObtainRequestToken.ExecuteAsync(
+                callbackUri,
+                Secrets.PocketAPIConsumerKey);
+
+            Uri requestUri = ObtainAuthorizeRequestTokenRedirectUri.Execute(requestToken, callbackUri);
+            WebAuthenticationResult result = await WebAuthenticationBroker.AuthenticateSilentlyAsync(requestUri);
+            if (result.ResponseStatus != WebAuthenticationStatus.Success)
+                result = await WebAuthenticationBroker.AuthenticateAsync(
+                    WebAuthenticationOptions.None,
+                    requestUri);
+
+            AccessToken token = await ObtainAccessToken.ExecuteAsync(requestToken, Secrets.PocketAPIConsumerKey);
         }
     }
 }
