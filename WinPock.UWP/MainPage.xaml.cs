@@ -37,7 +37,7 @@ namespace WinPock.UWP
 
         private async void AuthPocket()
         {
-            if (!AthenticateViaSavedAccessToken())
+            if (!AuthPocketViaSavedAccessToken())
             {
                 pocketClient = new PocketClient(Secrets.PocketAPIConsumerKey);
                 Uri callbackUri = WebAuthenticationBroker.GetCurrentApplicationCallbackUri();
@@ -58,7 +58,7 @@ namespace WinPock.UWP
             }
         }
         
-        private bool AthenticateViaSavedAccessToken()
+        private bool AuthPocketViaSavedAccessToken()
         {
             ApplicationDataContainer localSettings = Windows.Storage.ApplicationData.Current.LocalSettings;
             if (localSettings.Values.TryGetValue("accessToken", out object accessTokenObject))
