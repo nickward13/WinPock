@@ -1,12 +1,15 @@
-﻿using PocketApi.Auth;
+﻿using PocketApi;
+using PocketApi.Models;
 using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Runtime.InteropServices.WindowsRuntime;
+using System.Text.Json;
 using Windows.Foundation;
 using Windows.Foundation.Collections;
 using Windows.Security.Authentication.Web;
+using Windows.Storage;
 using Windows.UI.Xaml;
 using Windows.UI.Xaml.Controls;
 using Windows.UI.Xaml.Controls.Primitives;
@@ -24,6 +27,8 @@ namespace WinPock.UWP
     /// </summary>
     public sealed partial class MainPage : Page
     {
+        private PocketClient pocketClient;
+
         public MainPage()
         {
             this.InitializeComponent();
@@ -32,19 +37,37 @@ namespace WinPock.UWP
 
         private async void AuthPocket()
         {
-            Uri callbackUri = WebAuthenticationBroker.GetCurrentApplicationCallbackUri();
-            RequestToken requestToken = await ObtainRequestToken.ExecuteAsync(
-                callbackUri,
-                Secrets.PocketAPIConsumerKey);
+            if (!AthenticateViaSavedAccessToken())
+            {
+                pocketClient = new PocketClient(Secrets.PocketAPIConsumerKey);
+                Uri callbackUri = WebAuthenticationBroker.GetCurrentApplicationCallbackUri();
+                RequestToken requestToken = await pocketClient.ObtainRequestTokenAsync(
+                    callbackUri);
 
-            Uri requestUri = ObtainAuthorizeRequestTokenRedirectUri.Execute(requestToken, callbackUri);
-            WebAuthenticationResult result = await WebAuthenticationBroker.AuthenticateSilentlyAsync(requestUri);
-            if (result.ResponseStatus != WebAuthenticationStatus.Success)
-                result = await WebAuthenticationBroker.AuthenticateAsync(
-                    WebAuthenticationOptions.None,
-                    requestUri);
+                Uri requestUri = pocketClient.ObtainAuthorizeRequestTokenRedirectUri(requestToken, callbackUri);
+                WebAuthenticationResult result = await WebAuthenticationBroker.AuthenticateSilentlyAsync(requestUri);
+                if (result.ResponseStatus != WebAuthenticationStatus.Success)
+                    result = await WebAuthenticationBroker.AuthenticateAsync(
+                        WebAuthenticationOptions.None,
+                        requestUri);
 
-            AccessToken token = await ObtainAccessToken.ExecuteAsync(requestToken, Secrets.PocketAPIConsumerKey);
+                AccessToken token = await pocketClient.ObtainAccessTokenAsync(requestToken);
+                ApplicationDataContainer localSettings = Windows.Storage.ApplicationData.Current.LocalSettings;
+                string tokenString = JsonSerializer.Serialize(token);
+                localSettings.Values.Add("accessToken", tokenString);
+            }
+        }
+        
+        private bool AthenticateViaSavedAccessToken()
+        {
+            ApplicationDataContainer localSettings = Windows.Storage.ApplicationData.Current.LocalSettings;
+            if (localSettings.Values.TryGetValue("accessToken", out object accessTokenObject))
+            {
+                AccessToken accessToken = JsonSerializer.Deserialize<AccessToken>(accessTokenObject.ToString());
+                pocketClient = new PocketClient(accessToken);
+                return true;
+            }
+            return false;
         }
     }
 }
