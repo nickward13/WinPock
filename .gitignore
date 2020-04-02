@@ -341,3 +341,4 @@ healthchecksdb
 /WinPock.UWP/Secrets.cs
 /PocketApi/Secrets.cs
 /PocketApi.UnitTest/Secrets.cs
+/WinPock.UWP.Test/Secrets.cs
