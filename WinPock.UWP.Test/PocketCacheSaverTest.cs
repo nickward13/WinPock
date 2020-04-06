@@ -31,11 +31,12 @@ namespace WinPock.UWP.Test
             PocketCache pocketCache = new PocketCache(pocketClient);
 
             PocketCacheSaver pocketCacheSaver = new PocketCacheSaver(Windows.Storage.ApplicationData.Current.LocalFolder);
-            pocketCache = await pocketCacheSaver.LoadCacheAsync(pocketCache);
+            bool result = await pocketCacheSaver.LoadCacheAsync(pocketCache);
 
             Assert.IsNotNull(pocketCache);
             Assert.AreNotEqual(0, pocketCache.PocketItems.Count);
             Assert.IsNotNull(pocketCache.LastSyncDateTime);
+            Assert.AreNotEqual(new DateTime(1970, 1, 1), pocketCache.LastSyncDateTime);
         }
     }
 }

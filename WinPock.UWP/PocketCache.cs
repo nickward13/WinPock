@@ -13,7 +13,7 @@ namespace WinPock.UWP
     {
         private PocketClient _pocketClient;
         public ObservableCollection<PocketItem> PocketItems { get; set; }
-        public DateTime LastSyncDateTime { get; private set; }
+        public DateTime LastSyncDateTime { get; set; }
 
         public PocketCache(PocketClient pocketClient)
         {

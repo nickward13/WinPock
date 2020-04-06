@@ -1,5 +1,7 @@
-﻿using System;
+﻿using PocketApi.Models;
+using System;
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
 using System.IO;
 using System.Linq;
 using System.Text;
@@ -20,11 +22,15 @@ namespace WinPock.UWP
         
         public async Task<bool> SaveCacheAsync(PocketCache pocketCache)
         {
-            StorageFile storageFile = await _storageFolder.CreateFileAsync("PocketCache.json", CreationCollisionOption.ReplaceExisting);
+            StorageFile itemsStorageFile = await _storageFolder.CreateFileAsync("PocketItems.json", CreationCollisionOption.ReplaceExisting);
+            StorageFile lastSyncDateStorageFile = await _storageFolder.CreateFileAsync("SyncDate.json", CreationCollisionOption.ReplaceExisting);
+
             try
             {
-                string pocketCacheString = JsonSerializer.Serialize(pocketCache);
-                File.WriteAllText(storageFile.Path, pocketCacheString);
+                string itemsString = JsonSerializer.Serialize(pocketCache.PocketItems);
+                string lastSyncDateString = JsonSerializer.Serialize(pocketCache.LastSyncDateTime);
+                File.WriteAllText(itemsStorageFile.Path, itemsString);
+                File.WriteAllText(lastSyncDateStorageFile.Path, lastSyncDateString);
                 return true;
             } catch (Exception)
             {
@@ -32,18 +38,23 @@ namespace WinPock.UWP
             }
         }
 
-        public async Task<PocketCache> LoadCacheAsync(PocketCache pocketCache)
+        public async Task<bool> LoadCacheAsync(PocketCache pocketCache)
         {
             try
             {
-                StorageFile storageFile = await _storageFolder.GetFileAsync("PocketCache.json");
-                string pocketCacheString = File.ReadAllText(storageFile.Path);
-                pocketCache = JsonSerializer.Deserialize<PocketCache>(pocketCacheString);
-                return pocketCache;
+                StorageFile itemsStorageFile = await _storageFolder.GetFileAsync("PocketItems.json");
+                string itemsString = File.ReadAllText(itemsStorageFile.Path);
+                pocketCache.PocketItems = JsonSerializer.Deserialize<ObservableCollection<PocketItem>>(itemsString);
+                
+                StorageFile lastSyncDateStorageFile = await _storageFolder.GetFileAsync("SyncDate.json");
+                string lastSyncDateString = File.ReadAllText(lastSyncDateStorageFile.Path);
+                pocketCache.LastSyncDateTime = JsonSerializer.Deserialize<DateTime>(lastSyncDateString);
+                
+                return true;
             }
-            catch (Exception)
+            catch (Exception e)
             {
-                return null;
+                throw (e);
             }
         }
     }
