@@ -5,20 +5,33 @@
     xmlns:local="using:WinPock.UWP"
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    xmlns:pocketModel="using:PocketApi.Models"
     mc:Ignorable="d"
     Background="{ThemeResource ApplicationPageBackgroundThemeBrush}">
 
     <Grid>
         <Grid.ColumnDefinitions>
             <ColumnDefinition Width="Auto"/>
-            <ColumnDefinition Width="300"/>
+            <ColumnDefinition Width="400"/>
             <ColumnDefinition Width="*"/>
         </Grid.ColumnDefinitions>
 
-        
+
 
         <ListView ItemsSource="{x:Bind pocketCache.PocketItems, Mode=OneWay}"
-                  Grid.Column="1"/>
+                  Grid.Column="1">
+            <ListView.ItemTemplate>
+                <DataTemplate x:DataType="pocketModel:PocketItem">
+                    <StackPanel Orientation="Horizontal" Margin="6">
+                        <Image Source="{x:Bind Image.Source}" Width="75" Height="75" Stretch="UniformToFill" Margin="0,0,6,0"/>
+                        <StackPanel VerticalAlignment="Center">
+                            <TextBlock Text="{x:Bind ResolvedTitle}" FontWeight="Bold" TextWrapping="Wrap" Width="325"/>
+                            <TextBlock Text="{x:Bind WordCount}"/>
+                        </StackPanel>
+                    </StackPanel>
+                </DataTemplate>
+            </ListView.ItemTemplate>
+        </ListView>
 
     </Grid>
 </Page>
