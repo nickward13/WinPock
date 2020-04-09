@@ -50,6 +50,7 @@ namespace WinPock.UWP
         {
             await pocketCache.SyncArticlesAsync();
             await cacheSaver.SaveCacheAsync(pocketCache);
+            Bindings.Update();
         }
 
         private async Task AuthPocketAsync()

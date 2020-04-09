@@ -14,15 +14,12 @@ namespace WinPock.UWP
         private PocketClient _pocketClient;
 
         public bool CurrentlySyncing { get; set; }
-
-        public ObservableCollection<PocketItem> PocketItems { get; set; }
-        public DateTime LastSyncDateTime { get; set; }
+        public ObservableCollection<PocketItem> PocketItems { get; private set; } = new ObservableCollection<PocketItem>();
+        public DateTime LastSyncDateTime { get; private set; } = new DateTime(1970, 1, 1);
 
         public PocketCache(PocketClient pocketClient)
         {
             _pocketClient = pocketClient;
-            LastSyncDateTime = new DateTime(1970, 1, 1);
-            PocketItems = new ObservableCollection<PocketItem>();
         }
 
         public async Task SyncArticlesAsync()
@@ -49,7 +46,8 @@ namespace WinPock.UWP
                                 PocketItems.Add(pocketItem);
                             break;
                         case "2":
-                            PocketItems.Remove(PocketItems.First(pi => pi.Id == pocketItem.Id));
+                            if(PocketItems.Any(pi => pi.Id == pocketItem.Id))
+                                PocketItems.Remove(PocketItems.First(pi => pi.Id == pocketItem.Id));
                             break;
                     }
                 }
@@ -61,6 +59,12 @@ namespace WinPock.UWP
                 CurrentlySyncing = false;
                 throw (e);
             }
+        }
+
+        public void SetCacheContent(DateTime newLastSyncDateTime, ObservableCollection<PocketItem> newPocketItems)
+        {
+            LastSyncDateTime = newLastSyncDateTime;
+            PocketItems = newPocketItems;
         }
 
         public async Task AddArticleAsync(Uri uri)

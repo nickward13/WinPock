@@ -44,11 +44,13 @@ namespace WinPock.UWP
             {
                 StorageFile itemsStorageFile = await _storageFolder.GetFileAsync("PocketItems.json");
                 string itemsString = File.ReadAllText(itemsStorageFile.Path);
-                pocketCache.PocketItems = JsonSerializer.Deserialize<ObservableCollection<PocketItem>>(itemsString);
+                ObservableCollection<PocketItem> pocketItems = JsonSerializer.Deserialize<ObservableCollection<PocketItem>>(itemsString);
                 
                 StorageFile lastSyncDateStorageFile = await _storageFolder.GetFileAsync("SyncDate.json");
                 string lastSyncDateString = File.ReadAllText(lastSyncDateStorageFile.Path);
-                pocketCache.LastSyncDateTime = JsonSerializer.Deserialize<DateTime>(lastSyncDateString);
+                DateTime dateTime = JsonSerializer.Deserialize<DateTime>(lastSyncDateString);
+
+                pocketCache.SetCacheContent(dateTime, pocketItems);
                 
                 return true;
             }
