@@ -9,6 +9,17 @@
     Background="{ThemeResource ApplicationPageBackgroundThemeBrush}">
 
     <Grid>
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="Auto"/>
+            <ColumnDefinition Width="300"/>
+            <ColumnDefinition Width="*"/>
+        </Grid.ColumnDefinitions>
+
+        <TextBlock Grid.Column="0">Column 0</TextBlock>
+        <TextBlock Grid.Column="2" HorizontalAlignment="Center">Column 2</TextBlock>
+        
+        <ListView ItemsSource="{x:Bind pocketCache.PocketItems, Mode=OneWay}"
+                  Grid.Column="1"/>
 
     </Grid>
 </Page>
