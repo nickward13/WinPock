@@ -37,13 +37,13 @@ namespace WinPock.UWP
                     {
                         case "0":
                             if (!PocketItems.Any(pi => pi.Id == pocketItem.Id))
-                                PocketItems.Add(pocketItem);
+                                PocketItems.Insert(0, pocketItem);
                             break;
                         case "1":
                             if (PocketItems.Any(pi => pi.Id == pocketItem.Id))
                                 PocketItems.First(pi => pi.Id == pocketItem.Id).Status = "1";
                             else
-                                PocketItems.Add(pocketItem);
+                                PocketItems.Insert(0, pocketItem);
                             break;
                         case "2":
                             if(PocketItems.Any(pi => pi.Id == pocketItem.Id))
