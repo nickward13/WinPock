@@ -11,15 +11,21 @@ namespace WinPock.UWP.Test
     [TestClass]
     public class PocketCacheSaverTest
     {
+        private static PocketCacheSaver _pocketCacheSaver = new PocketCacheSaver(Windows.Storage.ApplicationData.Current.LocalFolder);
+        private static PocketClient _pocketClient = new PocketClient(Secrets.AccessToken);
+        private static PocketCache _pocketCache = new PocketCache(_pocketClient);
+
+        public PocketCacheSaverTest()
+        {
+
+        }
+
         [TestMethod]
         public async Task TestSave()
         {
-            PocketClient pocketClient = new PocketClient(Secrets.AccessToken);
-            PocketCache pocketCache = new PocketCache(pocketClient);
-            await pocketCache.SyncArticlesAsync();
+            await _pocketCache.SyncArticlesAsync();
 
-            PocketCacheSaver pocketCacheSaver = new PocketCacheSaver(Windows.Storage.ApplicationData.Current.LocalFolder);
-            bool result = await pocketCacheSaver.SaveCacheAsync(pocketCache);
+            bool result = await _pocketCacheSaver.SaveCacheAsync(_pocketCache);
 
             Assert.IsTrue(result);
         }
@@ -27,16 +33,12 @@ namespace WinPock.UWP.Test
         [TestMethod]
         public async Task TestLoad()
         {
-            PocketClient pocketClient = new PocketClient(Secrets.AccessToken);
-            PocketCache pocketCache = new PocketCache(pocketClient);
+            bool result = await _pocketCacheSaver.LoadCacheAsync(_pocketCache);
 
-            PocketCacheSaver pocketCacheSaver = new PocketCacheSaver(Windows.Storage.ApplicationData.Current.LocalFolder);
-            bool result = await pocketCacheSaver.LoadCacheAsync(pocketCache);
-
-            Assert.IsNotNull(pocketCache);
-            Assert.AreNotEqual(0, pocketCache.PocketItems.Count);
-            Assert.IsNotNull(pocketCache.LastSyncDateTime);
-            Assert.AreNotEqual(new DateTime(1970, 1, 1), pocketCache.LastSyncDateTime);
+            Assert.IsNotNull(_pocketCache);
+            Assert.AreNotEqual(0, _pocketCache.PocketItems.Count);
+            Assert.IsNotNull(_pocketCache.LastSyncDateTime);
+            Assert.AreNotEqual(new DateTime(1970, 1, 1), _pocketCache.LastSyncDateTime);
         }
     }
 }

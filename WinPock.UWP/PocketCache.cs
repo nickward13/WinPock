@@ -12,6 +12,9 @@ namespace WinPock.UWP
     public class PocketCache
     {
         private PocketClient _pocketClient;
+
+        public bool CurrentlySyncing { get; set; }
+
         public ObservableCollection<PocketItem> PocketItems { get; set; }
         public DateTime LastSyncDateTime { get; set; }
 
@@ -24,29 +27,40 @@ namespace WinPock.UWP
 
         public async Task SyncArticlesAsync()
         {
-            DateTime newSyncDateTime = DateTime.UtcNow;
-            IEnumerable<PocketItem> pocketItems = await _pocketClient.GetPocketItemsAsync(LastSyncDateTime);
+            CurrentlySyncing = true;
 
-            foreach (PocketItem pocketItem in pocketItems)
+            try
             {
-                switch(pocketItem.Status)
-                {
-                    case "0":
-                        PocketItems.Add(pocketItem);
-                        break;
-                    case "1":
-                        if (PocketItems.Any(pi => pi.Id == pocketItem.Id))
-                            PocketItems.First(pi => pi.Id == pocketItem.Id).Status = "1";
-                        else
-                            PocketItems.Add(pocketItem);                        
-                        break;
-                    case "2":
-                        PocketItems.Remove(PocketItems.First(pi => pi.Id == pocketItem.Id));
-                        break;
-                }
-            }
+                DateTime newSyncDateTime = DateTime.UtcNow;
+                IEnumerable<PocketItem> newPocketItems = await _pocketClient.GetPocketItemsAsync(LastSyncDateTime);
 
-            LastSyncDateTime = newSyncDateTime;
+                foreach (PocketItem pocketItem in newPocketItems)
+                {
+                    switch (pocketItem.Status)
+                    {
+                        case "0":
+                            if (!PocketItems.Any(pi => pi.Id == pocketItem.Id))
+                                PocketItems.Add(pocketItem);
+                            break;
+                        case "1":
+                            if (PocketItems.Any(pi => pi.Id == pocketItem.Id))
+                                PocketItems.First(pi => pi.Id == pocketItem.Id).Status = "1";
+                            else
+                                PocketItems.Add(pocketItem);
+                            break;
+                        case "2":
+                            PocketItems.Remove(PocketItems.First(pi => pi.Id == pocketItem.Id));
+                            break;
+                    }
+                }
+
+                LastSyncDateTime = newSyncDateTime;
+                CurrentlySyncing = false;
+            } catch (Exception e)
+            {
+                CurrentlySyncing = false;
+                throw (e);
+            }
         }
 
         public async Task AddArticleAsync(Uri uri)

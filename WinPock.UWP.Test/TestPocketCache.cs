@@ -12,13 +12,9 @@ namespace WinPock.UWP.Test
     [TestClass]
     public class TestPocketCache
     {
-        private PocketClient pocketClient;
+        private PocketClient pocketClient = new PocketClient(Secrets.AccessToken);
+        
         private string testArticleUrl = "https://www.theage.com.au/culture/music/inside-the-private-world-of-nick-cave-love-life-and-doodles-20200326-p54e4z.html";
-
-        public TestPocketCache()
-        {
-            pocketClient = new PocketClient(Secrets.AccessToken);
-        }
 
         [TestMethod]
         public async Task TestSyncArticlesAsync()
