@@ -6,6 +6,7 @@ using System.IO;
 using System.Linq;
 using System.Runtime.InteropServices.WindowsRuntime;
 using System.Text.Json;
+using System.Threading.Tasks;
 using Windows.Foundation;
 using Windows.Foundation.Collections;
 using Windows.Security.Authentication.Web;
@@ -28,14 +29,30 @@ namespace WinPock.UWP
     public sealed partial class MainPage : Page
     {
         private PocketClient pocketClient;
+        private PocketCache pocketCache;
+        private PocketCacheSaver cacheSaver = new PocketCacheSaver(Windows.Storage.ApplicationData.Current.LocalFolder);
 
         public MainPage()
         {
             this.InitializeComponent();
-            this.AuthPocket();
+            this.InitializePocketCache();
         }
 
-        private async void AuthPocket()
+        private async void InitializePocketCache()
+        {
+            await this.AuthPocketAsync();
+            pocketCache = new PocketCache(pocketClient);
+            await cacheSaver.LoadCacheAsync(pocketCache);
+            await SyncPocketCacheAsync();
+        }
+
+        private async Task SyncPocketCacheAsync()
+        {
+            await pocketCache.SyncArticlesAsync();
+            await cacheSaver.SaveCacheAsync(pocketCache);
+        }
+
+        private async Task AuthPocketAsync()
         {
             if (!AuthPocketViaSavedAccessToken())
             {

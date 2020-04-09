@@ -52,6 +52,10 @@ namespace WinPock.UWP
                 
                 return true;
             }
+            catch (FileNotFoundException)
+            {
+                return false;
+            }
             catch (Exception e)
             {
                 throw (e);
